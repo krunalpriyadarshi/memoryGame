@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Memory Game</title>
-    <link type="text/css" rel="stylesheet" href="jquery-ui.min.css"> 
-    <link type="text/css" rel="stylesheet" href="memory.css"> 
+    <link type="text/css" rel="stylesheet" href="jquery-ui.min.css">
+    <link type="text/css" rel="stylesheet" href="memory.css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="jquery-ui.min.js"></script> 
+    <script src="jquery-ui.min.js"></script>
     <script src="memory.js"></script>
 </head>
+
 <body>
     <header>
         <h1>Memory Game</h1>
         <p id="new_game"><a href="index.html">New Game</a></p>
-        <p id="player">&nbsp;</p>	
+        <p id="player">&nbsp;</p>
         <p id="high_score">&nbsp;</p>
-        <p id="correct">&nbsp;</p>        	
-        <div class="clear"></div>       
+        <p id="correct">&nbsp;</p>
+        <div class="clear"></div>
     </header>
-    <main>         
-        <div id="tabs"> 
+    <main>
+        <div id="tabs">
             <ul>
                 <li><a href="#tabs-1">Play Game</a></li>
                 <li><a href="#tabs-2">View Rules</a></li>
@@ -43,7 +45,7 @@
             <div id="tabs-3">
                 <label for='player_name'>Player name:</label>
                 <input type='text' id='player_name'><br>
-                
+
                 <label for='num_cards'>Number of cards:</label>
                 <select id='num_cards'>
                     <option>48</option>
@@ -53,10 +55,11 @@
                     <option>16</option>
                     <option>8</option>
                 </select><br>
-                
+
                 <input type='button' id='save_settings' value='Save Settings'>
             </div>
         </div>
-    </main> 
+    </main>
 </body>
+
 </html>
