@@ -1,6 +1,3 @@
 # Ignore Word documents and ZIP files
 *.docx
 *.zip
-
-# Ignore the 'memory_1' directory
-memory_1/
