@@ -1,10 +1,10 @@
-$(function() {
+$(function () {
     // ::Task-1
     $("#tabs").tabs();
+
     
     // ::Task-2
-    // Array of images
-    const imageUrls = [
+    const imagePaths = [
         'images/back.png',
         'images/blank.png',
         'images/card_1.png',
@@ -34,33 +34,75 @@ $(function() {
     ];
 
     // Function to preload images
-    function preloadImages(imageUrls) {
-        for (const imageUrl of imageUrls) {
+    function preloadImages(imagePaths, callback) {
+        let loadedImages = 0;
+        for (let i = 0; i < imagePaths.length; i++) {
             const img = new Image();
-            img.src = imageUrl;
+            img.onload = function () {
+                loadedImages++;
+                if (loadedImages === imagePaths.length) {
+                    callback();
+                }
+            };
+            img.src = imagePaths[i];
         }
     }
-    preloadImages(imageUrls);
 
+    
     // ::Task-3
-    // Default game settings
-    let numCards = 48;
-    let playerName = "Krunal";
+    // Preload images and display them in the 'cards' div
+    preloadImages(imagePaths, function () {
+        // Get the cards div
+        const cardsDiv = $("#cards");
 
-    // Update settings based on user input
-    $("#save_settings").click(function() {
-        numCards = parseInt($("#num_cards").val());
-        playerName = $("#player_name").val();
-        // You can also perform validation and error handling here if needed
-        updateGameSettingsUI();
+        // Generate the card elements and append them to the cardsDiv
+        for (let i = 0; i < imagePaths.length; i++) {
+            const img = $("<img>").attr("src", imagePaths[i]);
+            cardsDiv.append(img);
+        }
+
+        // Set default number of cards
+        const defaultNumCards = 48;
+        updateCardLayout(defaultNumCards);
     });
 
-    // Function to update the UI based on the game settings
-    function updateGameSettingsUI() {
-        $("#player").text("Player: " + playerName);
-        $("#num_cards").val(numCards);
+    // Function to update card layout
+    function updateCardLayout(numCards) {
+        const cardsDiv = $("#cards");
+        cardsDiv.empty();
+        const rows = Math.ceil(numCards / 8);
+
+        // Generate the card elements and append them to the cardsDiv
+        for (let i = 0; i < numCards; i++) {
+            const img = $("<img>").attr("src", imagePaths[i % 24]);
+            cardsDiv.append(img);
+        }
     }
 
-    // Call the function initially to set the default settings UI
-    updateGameSettingsUI();        
+    
+    // ::Task-4
+    // Handle Save Settings button click
+    $("#save_settings").click(function() {
+        const playerName = $("#player_name").val();
+        const numCards = parseInt($("#num_cards").val(), 10);
+
+        // Save player name and number of cards to session storage
+        sessionStorage.setItem("playerName", playerName);
+        sessionStorage.setItem("numCards", numCards);
+
+        // Reload the page to apply the saved settings
+        location.reload();
+    });
+
+    // Check if playerName and numCards are stored in session storage
+    const savedPlayerName = sessionStorage.getItem("playerName");
+    const savedNumCards = sessionStorage.getItem("numCards");
+
+    // Display saved player name and numCards
+    if (savedPlayerName) {
+        $("#player_name").val(savedPlayerName);
+    }
+    if (savedNumCards) {
+        $("#num_cards").val(savedNumCards);
+    }
 });
