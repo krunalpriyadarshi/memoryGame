@@ -2,47 +2,69 @@ body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 100%;
     background-color: white;
-    width: 750px;  
+    width: 750px;
     margin: 0 auto;
     border: 3px solid blue;
     padding: 0 2em 1em;
 }
-h1 { 
+
+h1 {
     font-size: 150%;
     color: blue;
     margin-bottom: .5em;
 }
+
 label {
     float: left;
     width: 8em;
 }
-input, select { 
+
+input,
+select {
     width: 10em;
     margin-right: 1em;
     margin-bottom: 1em;
 }
-input[type=checkbox] { 
+
+input[type=checkbox] {
     width: 2em;
 }
+
 header p {
-	margin: 0 2em 1em 0;
+    margin: 0 2em 1em 0;
 }
-#new_game, #player, #high_score, #correct {
-	float: left;
+
+#new_game,
+#player,
+#high_score,
+#correct {
+    float: left;
 }
+
 #cards img {
     height: 100px;
     width: 80px;
     padding-right: 5px;
     padding-bottom: 3px;
-    float: left; 
+    float: left;
 }
+
 .clear {
     clear: both;
 }
+
 .card-row {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+}
+
+#cards .card {
+    width: 80px;
+    height: 100px;
+    padding-right: 5px;
+    padding-bottom: 3px;
+    float: left;
+    overflow: hidden;
 }

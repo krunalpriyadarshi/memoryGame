@@ -109,14 +109,27 @@ $(function () {
 
             for (let col = 0; col < 8; col++) {
                 const cardIndex = row * 8 + col;
-                const img = $("<img>").attr("src", finalImagePaths[cardIndex % finalImagePaths.length]);
-                const cardDiv = $("<div>").addClass("card").append(img);
+                const imgSrc = finalImagePaths[cardIndex % finalImagePaths.length];
+                const cardDiv = $("<div>").addClass("card").append($("<img>").attr("src", "images/back.png").attr("data-original-src", imgSrc));
                 rowDiv.append(cardDiv);
             }
 
             cardsDiv.append(rowDiv);
         }
+
+        // Add click handling to the images
+        $(".card img").on("click", function () {
+            const img = $(this);
+            const currentSrc = img.attr("src");
+            const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
+
+            img.fadeOut(200, function () {
+                img.attr("src", newSrc);
+                img.fadeIn(200);
+            });
+        });
     }
+
 
 
 
