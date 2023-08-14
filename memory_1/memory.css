@@ -30,12 +30,18 @@ header p {
 #new_game, #player, #high_score, #correct {
 	float: left;
 }
+#cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 #cards img {
     height: 100px;
     width: 80px;
     padding-right: 5px;
     padding-bottom: 3px;
     float: left; 
+    cursor: pointer;
 }
 .clear {
     clear: both;

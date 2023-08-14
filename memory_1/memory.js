@@ -27,8 +27,8 @@ $(function () {
     $("#tabs").tabs();
 
     const imagePaths = [
-        'images/back.png',
-        'images/blank.png',
+        //'images/back.png',
+        //'images/blank.png',
         'images/card_1.png',
         'images/card_2.png',
         'images/card_3.png',
@@ -77,30 +77,43 @@ $(function () {
     });
 
     // Function to update card layout
-    function updateCardLayout(numCards) {
-        // Clear existing cards
-        const cardsDiv = $("#cards");
-        cardsDiv.empty();
+function updateCardLayout(numCards) {
+    // Clear existing cards
+    const cardsDiv = $("#cards");
+    cardsDiv.empty();
 
-        // Randomly shuffle the image paths
-        const shuffledImagePaths = shuffleArray(imagePaths);
+    // Randomly shuffle the image paths
+    const shuffledImagePaths = shuffleArray(imagePaths);
 
-        // Calculate rows and columns
-        const numRows = Math.ceil(numCards / 8);
-
-        // Generate the card elements and append them to the row divs
-        for (let row = 0; row < numRows; row++) {
-            const rowDiv = $("<div>").addClass("card-row");
-
-            for (let col = 0; col < 8; col++) {
-                const cardIndex = row * 8 + col;
-                const img = $("<img>").attr("src", shuffledImagePaths[cardIndex % shuffledImagePaths.length]);
-                rowDiv.append(img);
-            }
-
-            cardsDiv.append(rowDiv);
+    // Calculate rows and columns
+    const numRows = Math.ceil(numCards / 8);
+    
+    // Generate the card elements and append them to the row divs
+    for (let row = 0; row < numRows; row++) {
+        const rowDiv = $("<div>").addClass("card-row");
+        
+        for (let col = 0; col < 8; col++) {
+            const cardIndex = row * 8 + col;
+            const img = $("<img>").attr("src", "images/back.png").addClass("card-image");
+            rowDiv.append(img);
         }
+
+        cardsDiv.append(rowDiv);
     }
+
+    // Add event handlers to the images
+    $(".card-image").on("click", function() {
+        const img = $(this);
+        const currentSrc = img.attr("src");
+
+        // Toggle between original image and "back" image
+        if (currentSrc === "images/back.png") {
+            img.attr("src", shuffledImagePaths[img.index() % shuffledImagePaths.length]);
+        } else {
+            img.attr("src", "images/back.png");
+        }
+    });
+}
 
     // Function to update player name display
     function updatePlayerNameDisplay() {
