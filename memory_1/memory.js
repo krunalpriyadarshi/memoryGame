@@ -1,3 +1,28 @@
+// Function to preload images
+function preloadImages(imagePaths, callback) {
+    let loadedImages = 0;
+    for (let i = 0; i < imagePaths.length; i++) {
+        const img = new Image();
+        img.onload = function () {
+            loadedImages++;
+            if (loadedImages === imagePaths.length) {
+                callback();
+            }
+        };
+        img.src = imagePaths[i];
+    }
+}
+
+// Function to shuffle an array using the Fisher-Yates algorithm
+function shuffleArray(array) {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+}
+
 $(function () {
     $("#tabs").tabs();
 
@@ -30,21 +55,6 @@ $(function () {
         'images/card_24.png'
     ];
 
-    // Function to preload images
-    function preloadImages(imagePaths, callback) {
-        let loadedImages = 0;
-        for (let i = 0; i < imagePaths.length; i++) {
-            const img = new Image();
-            img.onload = function () {
-                loadedImages++;
-                if (loadedImages === imagePaths.length) {
-                    callback();
-                }
-            };
-            img.src = imagePaths[i];
-        }
-    }
-
     // Preload images and display them in the 'cards' div
     preloadImages(imagePaths, function () {
         // Set default values for player name and number of cards
@@ -68,16 +78,29 @@ $(function () {
 
     // Function to update card layout
     function updateCardLayout(numCards) {
+        // Clear existing cards
         const cardsDiv = $("#cards");
         cardsDiv.empty();
 
-        // Generate the card elements and append them to the cardsDiv
-        for (let i = 0; i < numCards; i++) {
-            const img = $("<img>").attr("src", imagePaths[i % imagePaths.length]); // Loop through the available images
-            cardsDiv.append(img);
+        // Randomly shuffle the image paths
+        const shuffledImagePaths = shuffleArray(imagePaths);
+
+        // Calculate rows and columns
+        const numRows = Math.ceil(numCards / 8);
+
+        // Generate the card elements and append them to the row divs
+        for (let row = 0; row < numRows; row++) {
+            const rowDiv = $("<div>").addClass("card-row");
+
+            for (let col = 0; col < 8; col++) {
+                const cardIndex = row * 8 + col;
+                const img = $("<img>").attr("src", shuffledImagePaths[cardIndex % shuffledImagePaths.length]);
+                rowDiv.append(img);
+            }
+
+            cardsDiv.append(rowDiv);
         }
     }
-
 
     // Function to update player name display
     function updatePlayerNameDisplay() {
@@ -101,17 +124,11 @@ $(function () {
 
         // Update the player name and card layout
         updatePlayerNameDisplay();
-        updateCardLayout(numCards); // Make sure this line is present
+        updateCardLayout(numCards);
 
         // Reload the page
         location.reload();
     });
-
-
-
-
-
-
 
     // Function to save settings in session storage
     function saveSettingsToSessionStorage(playerName, numCards) {

@@ -40,3 +40,9 @@ header p {
 .clear {
     clear: both;
 }
+.card-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
