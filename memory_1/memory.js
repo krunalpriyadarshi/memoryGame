@@ -1,9 +1,6 @@
 $(function () {
-    // ::Task-1
     $("#tabs").tabs();
 
-    
-    // ::Task-2
     const imagePaths = [
         'images/back.png',
         'images/blank.png',
@@ -48,61 +45,81 @@ $(function () {
         }
     }
 
-    
-    // ::Task-3
     // Preload images and display them in the 'cards' div
     preloadImages(imagePaths, function () {
-        // Get the cards div
-        const cardsDiv = $("#cards");
-
-        // Generate the card elements and append them to the cardsDiv
-        for (let i = 0; i < imagePaths.length; i++) {
-            const img = $("<img>").attr("src", imagePaths[i]);
-            cardsDiv.append(img);
-        }
-
-        // Set default number of cards
+        // Set default values for player name and number of cards
+        const defaultPlayerName = "Krunal_Default";
         const defaultNumCards = 48;
-        updateCardLayout(defaultNumCards);
+
+        // Load player name from session storage or use default
+        const savedSettings = sessionStorage.getItem("memoryGameSettings")
+            ? JSON.parse(sessionStorage.getItem("memoryGameSettings"))
+            : { playerName: defaultPlayerName, numCards: defaultNumCards };
+
+        $("#player_name").val(savedSettings.playerName);
+        $("#num_cards").val(savedSettings.numCards);
+
+        // Update the player name display
+        updatePlayerNameDisplay();
+
+        // Update the card layout
+        updateCardLayout(savedSettings.numCards);
     });
 
     // Function to update card layout
     function updateCardLayout(numCards) {
         const cardsDiv = $("#cards");
         cardsDiv.empty();
-        const rows = Math.ceil(numCards / 8);
 
         // Generate the card elements and append them to the cardsDiv
         for (let i = 0; i < numCards; i++) {
-            const img = $("<img>").attr("src", imagePaths[i % 24]);
+            const img = $("<img>").attr("src", imagePaths[i % imagePaths.length]); // Loop through the available images
             cardsDiv.append(img);
         }
     }
 
-    
-    // ::Task-4
+
+    // Function to update player name display
+    function updatePlayerNameDisplay() {
+        const playerName = sessionStorage.getItem("memoryGameSettings")
+            ? JSON.parse(sessionStorage.getItem("memoryGameSettings")).playerName
+            : "";
+
+        $("#player").text("Player: " + playerName);
+    }
+
+    // Load player name from session storage on page load
+    updatePlayerNameDisplay();
+
     // Handle Save Settings button click
-    $("#save_settings").click(function() {
+    $("#save_settings").click(function () {
         const playerName = $("#player_name").val();
         const numCards = parseInt($("#num_cards").val(), 10);
 
-        // Save player name and number of cards to session storage
-        sessionStorage.setItem("playerName", playerName);
-        sessionStorage.setItem("numCards", numCards);
+        // Save settings in session storage
+        saveSettingsToSessionStorage(playerName, numCards);
 
-        // Reload the page to apply the saved settings
+        // Update the player name and card layout
+        updatePlayerNameDisplay();
+        updateCardLayout(numCards); // Make sure this line is present
+
+        // Reload the page
         location.reload();
     });
 
-    // Check if playerName and numCards are stored in session storage
-    const savedPlayerName = sessionStorage.getItem("playerName");
-    const savedNumCards = sessionStorage.getItem("numCards");
 
-    // Display saved player name and numCards
-    if (savedPlayerName) {
-        $("#player_name").val(savedPlayerName);
-    }
-    if (savedNumCards) {
-        $("#num_cards").val(savedNumCards);
+
+
+
+
+
+    // Function to save settings in session storage
+    function saveSettingsToSessionStorage(playerName, numCards) {
+        const settings = {
+            playerName: playerName,
+            numCards: numCards
+        };
+
+        sessionStorage.setItem("memoryGameSettings", JSON.stringify(settings));
     }
 });
