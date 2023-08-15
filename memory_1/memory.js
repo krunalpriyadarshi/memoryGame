@@ -76,6 +76,9 @@ $(function () {
         updateCardLayout(savedSettings.numCards);
     });
 
+    // ::Task-8
+    let flippedCards = [];
+
     // Function to update card layout
     function updateCardLayout(numCards) {
         // Clear existing cards
@@ -118,7 +121,7 @@ $(function () {
         }
 
         // Add click handling to the images
-        $(".card img").on("click", function () {
+        /*$(".card img").on("click", function () {
             const img = $(this);
             const currentSrc = img.attr("src");
             const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
@@ -127,7 +130,49 @@ $(function () {
                 img.attr("src", newSrc);
                 img.fadeIn(200);
             });
+        });*/
+
+        $(".card img").on("click", function () {
+            const img = $(this);
+            const currentSrc = img.attr("src");
+            const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
+    
+            img.fadeOut(200, function () {
+                img.attr("src", newSrc);
+                img.fadeIn(200);
+    
+                if (flippedCards.length < 2) {
+                    flippedCards.push(img);
+    
+                    if (flippedCards.length === 2) {
+                        const firstCard = flippedCards[0];
+                        const secondCard = flippedCards[1];
+    
+                        if (firstCard.attr("data-original-src") === secondCard.attr("data-original-src")) {
+                            // Cards match, set their source to images/blank.png
+                            setTimeout(function () {
+                                firstCard.attr("src", "images/blank.png");
+                                secondCard.attr("src", "images/blank.png");
+                            }, 500);
+                        } else {
+                            // Cards do not match, flip them back
+                            setTimeout(function () {
+                                firstCard.fadeOut(200, function () {
+                                    firstCard.attr("src", "images/back.png");
+                                    firstCard.fadeIn(200);
+                                });
+                                secondCard.fadeOut(200, function () {
+                                    secondCard.attr("src", "images/back.png");
+                                    secondCard.fadeIn(200);
+                                });
+                            }, 500);
+                        }
+                        flippedCards = [];
+                    }
+                }
+            });
         });
+    
     }
 
     // Function to update player name display
