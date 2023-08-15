@@ -130,11 +130,6 @@ $(function () {
         });
     }
 
-
-
-
-
-
     // Function to update player name display
     function updatePlayerNameDisplay() {
         const playerName = sessionStorage.getItem("memoryGameSettings")
