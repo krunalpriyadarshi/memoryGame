@@ -136,43 +136,56 @@ $(function () {
             const img = $(this);
             const currentSrc = img.attr("src");
             const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
-    
-            img.fadeOut(200, function () {
-                img.attr("src", newSrc);
-                img.fadeIn(200);
-    
-                if (flippedCards.length < 2) {
-                    flippedCards.push(img);
-    
-                    if (flippedCards.length === 2) {
-                        const firstCard = flippedCards[0];
-                        const secondCard = flippedCards[1];
-    
-                        if (firstCard.attr("data-original-src") === secondCard.attr("data-original-src")) {
-                            // Cards match, set their source to images/blank.png
-                            setTimeout(function () {
-                                firstCard.attr("src", "images/blank.png");
-                                secondCard.attr("src", "images/blank.png");
-                            }, 500);
-                        } else {
-                            // Cards do not match, flip them back
-                            setTimeout(function () {
-                                firstCard.fadeOut(200, function () {
-                                    firstCard.attr("src", "images/back.png");
-                                    firstCard.fadeIn(200);
+
+            // Check if the card is already flipped or is a matching card with "blank.png" source
+            if (!img.hasClass("flipped") && newSrc !== "images/blank.png") {
+                img.fadeOut(200, function () {
+                    img.attr("src", newSrc);
+                    img.fadeIn(200);
+
+                    if (flippedCards.length < 2) {
+                        flippedCards.push(img);
+
+                        if (flippedCards.length === 2) {
+                            const firstCard = flippedCards[0];
+                            const secondCard = flippedCards[1];
+
+                            if (firstCard.attr("data-original-src") === secondCard.attr("data-original-src")) {
+                                // Cards match, slide them off the board
+                                firstCard.slideUp(400, function () {
+                                    firstCard.attr("src", "images/blank.png");
+                                    firstCard.slideDown(400);
                                 });
-                                secondCard.fadeOut(200, function () {
-                                    secondCard.attr("src", "images/back.png");
-                                    secondCard.fadeIn(200);
+
+                                secondCard.slideUp(400, function () {
+                                    secondCard.attr("src", "images/blank.png");
+                                    secondCard.slideDown(400);
                                 });
-                            }, 500);
+
+                                // Mark matching cards as flipped
+                                firstCard.addClass("flipped");
+                                secondCard.addClass("flipped");
+                            } else {
+                                // Cards do not match, flip them back
+                                setTimeout(function () {
+                                    firstCard.fadeOut(200, function () {
+                                        firstCard.attr("src", "images/back.png");
+                                        firstCard.fadeIn(200);
+                                    });
+                                    secondCard.fadeOut(200, function () {
+                                        secondCard.attr("src", "images/back.png");
+                                        secondCard.fadeIn(200);
+                                    });
+                                }, 1000);
+                            }
+                            flippedCards = [];
                         }
-                        flippedCards = [];
                     }
-                }
-            });
+                });
+            }
         });
-    
+
+
     }
 
     // Function to update player name display
