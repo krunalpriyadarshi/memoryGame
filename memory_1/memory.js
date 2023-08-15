@@ -78,6 +78,7 @@ $(function () {
 
     // ::Task-8
     let flippedCards = [];
+    let matchedPairs = 0;
 
     // Function to update card layout
     function updateCardLayout(numCards) {
@@ -165,6 +166,24 @@ $(function () {
                                 // Mark matching cards as flipped
                                 firstCard.addClass("flipped");
                                 secondCard.addClass("flipped");
+                                console.log("matched");
+
+                                // Increment matched pairs count
+                                matchedPairs++;
+                                console.log("macthed pair: ", matchedPairs);
+                                console.log("numUniqueCards: ", numUniqueCards);
+
+
+                                // Check if all pairs have been matched
+                                /*if (matchedPairs === imagePaths.length / 2) {
+                                    const highScore = imagePaths.length / 2;
+                                    alert("Congratulations! You've matched all pairs. Your high score is: " + highScore);
+                                }*/
+                                if (matchedPairs === numUniqueCards) {
+                                    const highScore = matchedPairs * 2;
+                                    alert("Congratulations! You've matched all pairs. Your high score is: " + highScore);
+                                }
+
                             } else {
                                 // Cards do not match, flip them back
                                 setTimeout(function () {
