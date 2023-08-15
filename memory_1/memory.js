@@ -74,6 +74,12 @@ $(function () {
 
         // Update the card layout
         updateCardLayout(savedSettings.numCards);
+
+        // Suppose highScore is the value you want to save
+        const maxscore = 0;
+
+        // Save the high score in session storage
+        sessionStorage.setItem("memoryGameHighScore", maxscore);
     });
 
     // ::Task-8
@@ -181,7 +187,12 @@ $(function () {
                                 }*/
                                 if (matchedPairs === numUniqueCards) {
                                     const highScore = matchedPairs * 2;
-                                    alert("Congratulations! You've matched all pairs. Your high score is: " + highScore);
+                                    if (highScore> parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)){
+                                        sessionStorage.setItem("memoryGameHighScore", highScore);
+                                        console.log("new highscore: ", highScore);
+                                        console.log("new highscore: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10));     
+                                    }                               
+                                    alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
                                 }
 
                             } else {
