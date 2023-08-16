@@ -1,4 +1,5 @@
 import memoryGameSettings from './library_settings.js';
+import libraryScores from './library_scores.js';
 
 // Function to preload images
 function preloadImages(imagePaths, callback) {
@@ -83,10 +84,19 @@ $(function () {
         updateCardLayout(savedSettings.numCards);
 
         // Suppose highScore is the value you want to save
-        const maxscore = 0;
+        //const maxscore = 0;
+        //const maxscore = parseInt(sessionStorage.getItem("memoryGameHighScore"), 10) || 0;
 
         // Save the high score in session storage
-        sessionStorage.setItem("memoryGameHighScore", maxscore);
+        //sessionStorage.setItem("memoryGameHighScore", maxscore);
+        const memoryGameScores = JSON.parse(localStorage.getItem("memoryGameScores"));
+
+        if (memoryGameScores && memoryGameScores[memoryGameSettings.playerName]) {
+            const highScore = memoryGameScores[memoryGameSettings.playerName];
+            $("#high_score").text("HighScore: Player: " + highScore);
+        } else {
+            $("#high_score").text("HighScore: No high score found");
+        }
     });
 
     // ::Task-8
@@ -95,6 +105,8 @@ $(function () {
 
     // Function to update card layout
     function updateCardLayout(numCards) {
+
+
         // Clear existing cards
         const cardsDiv = $("#cards");
         cardsDiv.empty();
@@ -161,6 +173,9 @@ $(function () {
                         flippedCards.push(img);
 
                         if (flippedCards.length === 2) {
+                            // Increment the number of turns
+                            libraryScores.incrementTurns();
+
                             const firstCard = flippedCards[0];
                             const secondCard = flippedCards[1];
 
@@ -183,6 +198,8 @@ $(function () {
 
                                 // Increment matched pairs count
                                 matchedPairs++;
+                                libraryScores.incrementMatches();
+
                                 console.log("macthed pair: ", matchedPairs);
                                 console.log("numUniqueCards: ", numUniqueCards);
 
@@ -194,14 +211,41 @@ $(function () {
                                 }*/
                                 if (matchedPairs === numUniqueCards) {
                                     const highScore = matchedPairs * 2;
-                                    if (highScore > parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)) {
+
+                                    const playerName = memoryGameSettings.playerName;
+                                    // Create a playerScore object
+                                    const playerScore = {
+                                        playerName: playerName,
+                                        score: highScore
+                                    };
+                                    //const playerName = memoryGameSettings.playerName;
+                                    // Create a playerScore object
+                                    /*const playerScore = {
+                                        playerName: playerName,
+                                        score: libraryScores.showMatch()
+                                    };*/
+
+                                    // Compare and save high score
+                                    libraryScores.compareScores(playerScore);
+                                    console.log("------------------------------------------------------------");
+                                    console.log(playerScore);
+
+                                    // Display high score
+                                    libraryScores.displayHighScore(playerName);
+
+                                    // Show congratulations alert
+                                    alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
+
+                                    /*if (highScore > parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)) {
                                         sessionStorage.setItem("memoryGameHighScore", highScore);
                                         console.log("new highscore: ", highScore);
                                         console.log("new highscore: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10));
                                     }
-                                    alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
+                                    alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);*/
                                 }
-
+                                // Display the score
+                                const percentage = libraryScores.calculatePercentage(numUniqueCards * 2);
+                                $("#correct").text(`Correct: ${percentage.toFixed(2)}%`);
                             } else {
                                 // Cards do not match, flip them back
                                 setTimeout(function () {
