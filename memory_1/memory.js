@@ -1,3 +1,30 @@
+import memoryGameSettings from './library_settings.js';
+
+// Function to preload images
+function preloadImages(imagePaths, callback) {
+    let loadedImages = 0;
+    for (let i = 0; i < imagePaths.length; i++) {
+        const img = new Image();
+        img.onload = function () {
+            loadedImages++;
+            if (loadedImages === imagePaths.length) {
+                callback();
+            }
+        };
+        img.src = imagePaths[i];
+    }
+}
+
+// Function to shuffle an array using the Fisher-Yates algorithm
+function shuffleArray(array) {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+}
+
 $(function () {
     $("#tabs").tabs();
 
@@ -41,8 +68,13 @@ $(function () {
             ? JSON.parse(sessionStorage.getItem("memoryGameSettings"))
             : { playerName: defaultPlayerName, numCards: defaultNumCards };
 
-        $("#player_name").val(savedSettings.playerName);
-        $("#num_cards").val(savedSettings.numCards);
+        //$("#player_name").val(savedSettings.playerName);
+        //$("#num_cards").val(savedSettings.numCards);
+
+        // Load player name from memoryGameSettings object and update input field
+        $("#player_name").val(memoryGameSettings.playerName);
+        // Load number of cards from memoryGameSettings object and update input field
+        $("#num_cards").val(memoryGameSettings.numCards);
 
         // Update the player name display
         updatePlayerNameDisplay();
@@ -56,31 +88,6 @@ $(function () {
         // Save the high score in session storage
         sessionStorage.setItem("memoryGameHighScore", maxscore);
     });
-
-    // Function to preload images
-    function preloadImages(imagePaths, callback) {
-        let loadedImages = 0;
-        for (let i = 0; i < imagePaths.length; i++) {
-            const img = new Image();
-            img.onload = function () {
-                loadedImages++;
-                if (loadedImages === imagePaths.length) {
-                    callback();
-                }
-            };
-            img.src = imagePaths[i];
-        }
-    }
-
-    // Function to shuffle an array using the Fisher-Yates algorithm
-    function shuffleArray(array) {
-        const shuffledArray = [...array];
-        for (let i = shuffledArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-        }
-        return shuffledArray;
-    }
 
     // ::Task-8
     let flippedCards = [];
@@ -190,14 +197,9 @@ $(function () {
                                     if (highScore > parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)) {
                                         sessionStorage.setItem("memoryGameHighScore", highScore);
                                         console.log("new highscore: ", highScore);
-                                        console.log("new highscore from session: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10));
-                                        highScoreElement = document.getElementById("high_score");
+                                        console.log("new highscore: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10));
                                     }
-                                    highScoreElement.textContent = "HighScore: " + parseInt(sessionStorage.getItem("memoryGameHighScore"), 10);
                                     alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
-                                    //alert("Congratulations! You've matched all pairs.\nYour high score is: " + highScore + "\n\nClick OK to go back to the homepage.");
-                                    // Redirect to index.html when OK is clicked
-                                    //window.location.href = "index.html";
                                 }
 
                             } else {
@@ -241,7 +243,10 @@ $(function () {
         const numCards = parseInt($("#num_cards").val(), 10);
 
         // Save settings in session storage
-        saveSettingsToSessionStorage(playerName, numCards);
+        //saveSettingsToSessionStorage(playerName, numCards);
+        // Update memoryGameSettings object
+        memoryGameSettings.playerName = playerName;
+        memoryGameSettings.numCards = numCards;
 
         // Update the player name and card layout
         updatePlayerNameDisplay();
@@ -252,12 +257,12 @@ $(function () {
     });
 
     // Function to save settings in session storage
-    function saveSettingsToSessionStorage(playerName, numCards) {
+    /*function saveSettingsToSessionStorage(playerName, numCards) {
         const settings = {
             playerName: playerName,
             numCards: numCards
         };
 
         sessionStorage.setItem("memoryGameSettings", JSON.stringify(settings));
-    }
+    }*/
 });
