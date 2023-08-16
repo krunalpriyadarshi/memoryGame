@@ -1,30 +1,6 @@
 import memoryGameSettings from './library_settings.js';
 import libraryScores from './library_scores.js';
-
-// Function to preload images
-function preloadImages(imagePaths, callback) {
-    let loadedImages = 0;
-    for (let i = 0; i < imagePaths.length; i++) {
-        const img = new Image();
-        img.onload = function () {
-            loadedImages++;
-            if (loadedImages === imagePaths.length) {
-                callback();
-            }
-        };
-        img.src = imagePaths[i];
-    }
-}
-
-// Function to shuffle an array using the Fisher-Yates algorithm
-function shuffleArray(array) {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;
-}
+import libraryCards from './library_cards.js';
 
 $(function () {
     $("#tabs").tabs();
@@ -59,7 +35,7 @@ $(function () {
     ];
 
     // Preload images and display them in the 'cards' div
-    preloadImages(imagePaths, function () {
+    libraryCards.preloadImages(imagePaths, function () {
         // Set default values for player name and number of cards
         const defaultPlayerName = "Krunal_Default";
         const defaultNumCards = 48;
@@ -113,24 +89,30 @@ $(function () {
 
         // Calculate rows and columns
         const numRows = Math.ceil(numCards / 8);
+        
+        
+        // Randomly shuffle the image paths
+        const shuffledImagePaths = libraryCards.shuffleArray(imagePaths);
 
         // Calculate the number of unique cards to display (half of numCards)
         const numUniqueCards = Math.floor(numCards / 2);
 
-        // Randomly shuffle the image paths
-        const shuffledImagePaths = shuffleArray(imagePaths);
 
-        // Select the first numUniqueCards images for uniqueness
-        const uniqueImagePaths = shuffledImagePaths.slice(0, numUniqueCards);
+        /* 
+        // ----------------------------- used in libraryCards.generateFinalImagePaths() function:------------------------------------------------------
+            // Calculate the number of unique cards to display (half of numCards)
+            const numUniqueCards = Math.floor(numCards / 2);
+            // Select the first numUniqueCards images for uniqueness
+            const uniqueImagePaths = shuffledImagePaths.slice(0, numUniqueCards);
+            // Shuffle the unique image paths to randomize their order
+            const shuffledUniqueImagePaths = libraryCards.shuffleArray(uniqueImagePaths);
+            // Duplicate the shuffled unique image paths to ensure pairs
+            const pairedImagePaths = [...shuffledUniqueImagePaths, ...shuffledUniqueImagePaths];
+            // Shuffle the paired image paths to randomize their order
+            const finalImagePaths = libraryCards.shuffleArray(pairedImagePaths);
+        */
 
-        // Shuffle the unique image paths to randomize their order
-        const shuffledUniqueImagePaths = shuffleArray(uniqueImagePaths);
-
-        // Duplicate the shuffled unique image paths to ensure pairs
-        const pairedImagePaths = [...shuffledUniqueImagePaths, ...shuffledUniqueImagePaths];
-
-        // Shuffle the paired image paths to randomize their order
-        const finalImagePaths = shuffleArray(pairedImagePaths);
+        const finalImagePaths= libraryCards.generateFinalImagePaths(shuffledImagePaths, numCards);
 
         // Generate the card elements and append them to the row divs
         for (let row = 0; row < numRows; row++) {
@@ -139,7 +121,7 @@ $(function () {
             for (let col = 0; col < 8; col++) {
                 const cardIndex = row * 8 + col;
                 const imgSrc = finalImagePaths[cardIndex % finalImagePaths.length];
-                const cardDiv = $("<div>").addClass("card").append($("<img>").attr("src", "images/back.png").attr("data-original-src", imgSrc));
+                const cardDiv = libraryCards.createCardHTML(imgSrc);
                 rowDiv.append(cardDiv);
             }
 
@@ -161,10 +143,12 @@ $(function () {
         $(".card img").on("click", function () {
             const img = $(this);
             const currentSrc = img.attr("src");
-            const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
+            const newSrc = currentSrc.includes(libraryCards.getCardBackSrc()) ? img.attr("data-original-src") : libraryCards.getCardBackSrc();
+            //const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
 
             // Check if the card is already flipped or is a matching card with "blank.png" source
-            if (!img.hasClass("flipped") && newSrc !== "images/blank.png") {
+            if (!img.hasClass("flipped") && newSrc !== libraryCards.getBlankCardSrc()) {
+                // libraryCards.flipCardFadeEffect(img, newSrc, function () {  --> error To-do:3
                 img.fadeOut(200, function () {
                     img.attr("src", newSrc);
                     img.fadeIn(200);
