@@ -1,6 +1,7 @@
 import memoryGameSettings from './library_settings.js';
 import libraryScores from './library_scores.js';
 import libraryCards from './library_cards.js';
+import libraryCard from './library_card.js';
 
 $(function () {
     $("#tabs").tabs();
@@ -71,7 +72,7 @@ $(function () {
             const highScore = memoryGameScores[memoryGameSettings.playerName];
             $("#high_score").text("HighScore: Player: " + highScore);
         } else {
-            $("#high_score").text("HighScore: No high score found");
+            $("#high_score").text("HighScore: Yet to score.");
         }
     });
 
@@ -89,8 +90,8 @@ $(function () {
 
         // Calculate rows and columns
         const numRows = Math.ceil(numCards / 8);
-        
-        
+
+
         // Randomly shuffle the image paths
         const shuffledImagePaths = libraryCards.shuffleArray(imagePaths);
 
@@ -112,7 +113,7 @@ $(function () {
             const finalImagePaths = libraryCards.shuffleArray(pairedImagePaths);
         */
 
-        const finalImagePaths= libraryCards.generateFinalImagePaths(shuffledImagePaths, numCards);
+        const finalImagePaths = libraryCards.generateFinalImagePaths(shuffledImagePaths, numCards);
 
         // Generate the card elements and append them to the row divs
         for (let row = 0; row < numRows; row++) {
@@ -142,6 +143,10 @@ $(function () {
 
         $(".card img").on("click", function () {
             const img = $(this);
+
+            const anchorTag = img.closest('a');
+            const cardObject = libraryCard.createCardObject(anchorTag);
+
             const currentSrc = img.attr("src");
             const newSrc = currentSrc.includes(libraryCards.getCardBackSrc()) ? img.attr("data-original-src") : libraryCards.getCardBackSrc();
             //const newSrc = currentSrc.includes("back.png") ? img.attr("data-original-src") : "images/back.png";
@@ -219,7 +224,8 @@ $(function () {
 
                                     // Show congratulations alert
                                     alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
-
+                                    window.location.reload();
+                                    
                                     /*if (highScore > parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)) {
                                         sessionStorage.setItem("memoryGameHighScore", highScore);
                                         console.log("new highscore: ", highScore);
