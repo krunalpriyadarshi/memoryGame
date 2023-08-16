@@ -1,28 +1,3 @@
-// Function to preload images
-function preloadImages(imagePaths, callback) {
-    let loadedImages = 0;
-    for (let i = 0; i < imagePaths.length; i++) {
-        const img = new Image();
-        img.onload = function () {
-            loadedImages++;
-            if (loadedImages === imagePaths.length) {
-                callback();
-            }
-        };
-        img.src = imagePaths[i];
-    }
-}
-
-// Function to shuffle an array using the Fisher-Yates algorithm
-function shuffleArray(array) {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;
-}
-
 $(function () {
     $("#tabs").tabs();
 
@@ -81,6 +56,31 @@ $(function () {
         // Save the high score in session storage
         sessionStorage.setItem("memoryGameHighScore", maxscore);
     });
+
+    // Function to preload images
+    function preloadImages(imagePaths, callback) {
+        let loadedImages = 0;
+        for (let i = 0; i < imagePaths.length; i++) {
+            const img = new Image();
+            img.onload = function () {
+                loadedImages++;
+                if (loadedImages === imagePaths.length) {
+                    callback();
+                }
+            };
+            img.src = imagePaths[i];
+        }
+    }
+
+    // Function to shuffle an array using the Fisher-Yates algorithm
+    function shuffleArray(array) {
+        const shuffledArray = [...array];
+        for (let i = shuffledArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+        }
+        return shuffledArray;
+    }
 
     // ::Task-8
     let flippedCards = [];
@@ -187,16 +187,17 @@ $(function () {
                                 }*/
                                 if (matchedPairs === numUniqueCards) {
                                     const highScore = matchedPairs * 2;
-                                    if (highScore> parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)){
+                                    if (highScore > parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)) {
                                         sessionStorage.setItem("memoryGameHighScore", highScore);
                                         console.log("new highscore: ", highScore);
-                                        console.log("new highscore from session: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10)); 
-                                        highScoreElement = document.getElementById("high_score");} 
-                                        highScoreElement.textContent = "HighScore: " + parseInt(sessionStorage.getItem("memoryGameHighScore"), 10);                              
-                                        alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);       
-                                        //alert("Congratulations! You've matched all pairs.\nYour high score is: " + highScore + "\n\nClick OK to go back to the homepage.");
-                                        // Redirect to index.html when OK is clicked
-                                        //window.location.href = "index.html";
+                                        console.log("new highscore from session: ", parseInt(sessionStorage.getItem("memoryGameHighScore"), 10));
+                                        highScoreElement = document.getElementById("high_score");
+                                    }
+                                    highScoreElement.textContent = "HighScore: " + parseInt(sessionStorage.getItem("memoryGameHighScore"), 10);
+                                    alert("Congratulations! You've matched all pairs. \nYour high score is: " + highScore);
+                                    //alert("Congratulations! You've matched all pairs.\nYour high score is: " + highScore + "\n\nClick OK to go back to the homepage.");
+                                    // Redirect to index.html when OK is clicked
+                                    //window.location.href = "index.html";
                                 }
 
                             } else {
